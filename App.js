@@ -4,6 +4,7 @@ import HomeScreen from './screens/HomeScreen';
 import 'react-native-url-polyfill/auto';
 import RestaurantScreen from './screens/RestaurantScreen';
 import { store } from './store';
+import { Provider } from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 export default function App() {

@@ -39,7 +39,7 @@ const HomeScreen = () => {
     <View className="flex-row pb-3 items-center mx-4 space-x-2 ">
       <Image
         source={{
-          uri: "https://links.papareact.com/wru",
+          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHp1ZgcjwctU5TRZMXiz-nCcfLG7plki7eow&usqp=CAU",
         }}
         className="h-7 w-7 bg-gray-300 p-4 rounded-full"
       />
