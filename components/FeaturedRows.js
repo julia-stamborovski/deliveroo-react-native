@@ -1,9 +1,31 @@
 import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import React , {useEffect, useState} from 'react'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 import RestaurantCard from './RestaurantCard';
+import createClient from '../sanity';
 
-const FeaturedRows = ({ title, description, id }) => {
+const FeaturedRows = ({ id ,title, description  }) => {
+  const [restaurants, setRestaurants] = useState([]);
+
+  useEffect(() => {
+    createClient.fetch(`
+    *[_type == 'featured' && _id == $id] {
+      ...,
+      restaurants[]->{
+        ...,
+        dishes[]->,
+        type-> {
+          name
+        }
+      },
+    }[0]
+    `, {id}
+    ).then((data) => {
+      setRestaurants(data?.restaurants);
+    })
+  }, []);
+
+
   return (
   <View>
     <View className="mt-4 flex-row items-center justify-between px-4">
@@ -21,42 +43,23 @@ const FeaturedRows = ({ title, description, id }) => {
       className="pt-4"
       >
         {/* restaurants cards */}
-        <RestaurantCard 
-            id={123}
-            imgUrl="https://i.kym-cdn.com/entries/icons/original/000/027/707/henry.png"
-            title="Yol Dog"
-            rating={4.5}
-            genre="Dog" 
-            address="123 Main St"
-            short_description="This is a short description"
-            dishes={[]}
-            long={20}
-            lat={0}
-        />
-         <RestaurantCard 
-            id={123}
-            imgUrl="https://i.kym-cdn.com/entries/icons/original/000/027/707/henry.png"
-            title="Yol Dog"
-            rating={4.5}
-            genre="Dog" 
-            address="123 Main St"
-            short_description="This is a short description"
-            dishes={[]}
-            long={20}
-            lat={0}
-        />
-         <RestaurantCard 
-            id={123}
-            imgUrl="https://i.kym-cdn.com/entries/icons/original/000/027/707/henry.png"
-            title="Yol Dog"
-            rating={4.5}
-            genre="Dog" 
-            address="123 Main St"
-            short_description="This is a short description"
-            dishes={[]}
-            long={20}
-            lat={0}
-        />
+        {restaurants?.map(restaurant => (
+          <RestaurantCard 
+          key={restaurant._id}
+          id={restaurant._id}
+          imgUrl={restaurant.image}
+          title={restaurant.name}
+          rating={restaurant.rating}
+          genre={restaurant.type?.name} 
+          address={restaurant.address}
+          short_description={restaurant.short_description}
+          dishes={restaurant.dishes}
+          long={restaurant.long}
+          lat={restaurant.lat}
+          />
+        ))}
+       
+   
       </ScrollView>
   </View>
   );

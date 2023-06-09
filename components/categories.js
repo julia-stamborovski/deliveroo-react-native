@@ -1,8 +1,19 @@
-import {  ScrollView, Image} from 'react-native';
-import React from 'react';
+import {  ScrollView } from 'react-native';
+import React , {useState, useEffect} from 'react';
 import CategoryCard from './CategoryCard';
+import createClient from '../sanity';
+import { urlFor } from '../sanity';
 
 export default function Categories() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(()=> {
+    createClient.fetch(
+      `  *[_type == "category"]
+  `).then((data) => {
+    setCategories(data);
+  })
+  }, [])
   return (
     
   <ScrollView 
@@ -14,25 +25,15 @@ export default function Categories() {
     showsHorizontalScrollIndicator={false}>
       
       {/* Category Card */}
- 
-      <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title="testing dogo 1"
+    {categories.map((category) => (
+        <CategoryCard
+          key={category._id}
+          imgUrl={urlFor(category.image).url()}
+          title={category.name}
         />
-      <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title=" testing dogo 2 "
-        />
-      <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title="testing doo 3 "
-        />
-         <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title="testing doo 3 "
-        />
-         <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title="testing doo 3 "
-        />
-         <CategoryCard
-        imgUrl="https://pbs.twimg.com/media/FS_76LZXEAEG6xh.jpg"  title="testing doo 3 "
-        />
+    ))}
+
+      
  
   </ScrollView>
   )
